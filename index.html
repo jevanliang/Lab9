@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+<script>
+  window.TrackJS && TrackJS.install({ 
+    token: "45c6e973a8de42efb30a68161a29cfa8"
+    // for more configuration options, see https://docs.trackjs.com
+  });
+</script>
+                        
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -53,6 +61,8 @@
     <button>End Timer</button>
     <button>Console Trace</button>
     <button>Trigger a Global Error</button>
+    <button>Try me</button>
+    <button>Fatal</button>
   </section>
 
   <script>
@@ -67,6 +77,87 @@
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
     // TODO - Make buttons functional
+
+    errorBtns[0].addEventListener("click", ()=> {console.log("Log blogged"); })
+
+    errorBtns[1].addEventListener("click", ()=> {console.error("Log clogged"); })
+
+    errorBtns[2].addEventListener("click", ()=> {console.dir(document.body); })
+
+    errorBtns[3].addEventListener("click", ()=> {console.dirxml(document.body); })
+
+    errorBtns[4].addEventListener("click", ()=> {console.group("lonely"); })
+
+    errorBtns[5].addEventListener("click", ()=> {console.groupEnd("lonely"); })
+
+    errorBtns[6].addEventListener("click", ()=> {
+      console.table([ {a: "beep", b: "boop",},
+        {a: "a", b:"shoop",},
+        {a: "loop", b:"loop",},
+        {a: "oop", b: "gloop",} ]);
+    })
+
+    errorBtns[7].addEventListener("click", ()=> {console.time("onTheClock"); })
+
+    errorBtns[8].addEventListener("click", ()=> {console.timeEnd("onTheClock"); })
+
+
+    function hiImHere() {nowImThere(); }
+
+    function nowImThere() {console.trace(); }
+
+    errorBtns[9].addEventListener("click", ()=> {hiImHere(); })
+
+    errorBtns[10].addEventListener("click", ()=> {
+      let a = "ticktock";
+      let b = "tiktok";
+      let c = "These are not equal to each other";
+      if(a != b) {
+        console.error(c);
+      }
+    });
+
+    errorBtns[11].addEventListener("click", ()=> {
+    try{
+      fly("Penguins CAN fly");
+    }
+    catch(err) {
+      console.log("Mission failed: Crashed and burned");
+    }
+    finally {
+      console.log("We'll get them next time");
+    }
+  });
+
+  class cannotMathError extends Error {
+    constructor(message) {
+      super(message);
+      this.name = "CannotMathError";
+    }
+  }
+
+  errorBtns[12].addEventListener("click", ()=> {
+    try{
+      let output = document.querySelector('output');
+      let firstNum = document.querySelector('#first-num').value;
+      let secondNum = document.querySelector('#second-num').value;
+      let operator = document.querySelector('#operator').value;
+      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      if(firstNum == "") {
+        throw new cannotMathError("Nothing to be mathed to");
+      }
+
+      if(secondNum == "") {
+        throw new cannotMathError("Nothing to math with");
+      }
+    }
+    catch(err) {
+      if(err instanceof cannotMathError) {
+        console.log("Please fill out both fields");
+      }
+    }
+  });
+
   </script>
 </body>
 </html>
